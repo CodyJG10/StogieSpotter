@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+           xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           x:Class="StogieSpotter.App.Views.SearchForCity"
+           CanBeDismissedByTappingOutsideOfPopup="True">
+    <VerticalStackLayout VerticalOptions="FillAndExpand"
+                         Margin="50,100,50,100">
+
+        <SearchBar Placeholder="Enter A Location"
+                    TextColor="Black"
+                    BackgroundColor="White"
+                    Text="{Binding Query}"
+                    TextChanged="SearchBar_TextChanged"/>
+
+        <CollectionView x:Name="suggestionsListView"
+                        ItemsSource="{Binding Suggestions}"
+                        VerticalOptions="FillAndExpand"
+                        SelectionMode="Single"
+                        SelectionChanged="suggestionsListView_SelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,0,0,0"
+                            VerticalOptions="FillAndExpand">
+                        <Label Text="{Binding}"
+                               HorizontalTextAlignment="Center"
+                               FontSize="Medium"
+                               Padding="7"
+                               TextColor="{StaticResource Primary}"/>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</mct:Popup>

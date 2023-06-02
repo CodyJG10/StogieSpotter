@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StogieSpotter.App.Views.LocationDetails"
+             Title="Details"
+             x:Name="page"
+             BackgroundImageSource="bg_1.png"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="#8B0000" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+
+        <StackLayout>
+
+            <StackLayout IsVisible="{Binding Loading}"
+                     Grid.Row="1"
+                     VerticalOptions="Center">
+                <ActivityIndicator Color="{StaticResource Primary}"
+                               WidthRequest="100"
+                               IsRunning="True"
+                               HeightRequest="100"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                <Label Text="Loading..."
+                   TextColor="{StaticResource Primary}"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Start"/>
+            </StackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}">
+
+                <Label Text="Loading"
+                   TextColor="{StaticResource Primary}"
+                   FontSize="Large"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="{Binding Loading}"
+                   />
+
+                <Frame BackgroundColor="Transparent"
+               BorderColor="Transparent"
+               CornerRadius="45">
+
+                    <Image Source="{Binding CoverImage}"
+                   HeightRequest="400"
+                   Aspect="AspectFill"/>
+
+                </Frame>
+
+                <Frame Margin="10,0,10,0"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent">
+
+                    <Border StrokeShape="{RoundRectangle CornerRadius=8}"
+                            Background="#FFD700"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="Start"
+                            SemanticProperties.Description="Button that opens a filter dialog">
+                        <HorizontalStackLayout Margin="14,12" 
+                                               Spacing="12"
+                                               HorizontalOptions="FillAndExpand">
+                            <Image Source="lcoation.png" VerticalOptions="Center" WidthRequest="50"/>
+                            <Label Text="TAKE ME THERE" 
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" 
+                                   TextColor="White"
+                                   FontSize="25"/>
+                        </HorizontalStackLayout>
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GetDirectionsCommand}"/>
+                        </Border.GestureRecognizers>
+
+                    </Border>
+                </Frame>
+
+
+
+                <CollectionView ItemsSource="{Binding Details.Photos}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="Transparent"
+                                                   BorderColor="Transparent"
+                                                   VerticalOptions="FillAndExpand">
+                                <Image Source="{Binding}" 
+                                                       Aspect="Fill"
+                                                       WidthRequest="200"
+                                                       HeightRequest="200"
+                                                       HorizontalOptions="FillAndExpand"
+                                                       VerticalOptions="FillAndExpand">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference page}, Path=BindingContext.PhotoSelectedCommand}"
+                                                          CommandParameter="{Binding}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Frame BackgroundColor="#FFFDD0"
+                   CornerRadius="25"
+                   Margin="15">
+
+                    <VerticalStackLayout>
+
+                        <Label Text="{Binding Details.Details.Name}"
+                           FontSize="30"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           />
+
+                        <Label Text="{Binding Details.PriceText}"
+                           FontSize="30"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,10"/>
+
+                        <Label Text="{Binding Details.RatingText}"
+                           FontSize="30"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,10"/>
+
+                        <Border StrokeShape="{RoundRectangle CornerRadius=8}"
+                            Background="#FFD700"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="Start"
+                            SemanticProperties.Description="Button that opens a filter dialog">
+                            <HorizontalStackLayout Margin="14,12" 
+                                               Spacing="12"
+                                               HorizontalOptions="FillAndExpand">
+                                <Image Source="globe.png" VerticalOptions="Center" WidthRequest="50"/>
+                                <Label Text="{Binding Details.WebsiteUrl}" 
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" 
+                                   TextColor="White"
+                                   FontSize="Small"/>
+                            </HorizontalStackLayout>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToWebsiteCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+
+
+                        <Border StrokeShape="{RoundRectangle CornerRadius=8}"
+                            Background="#FFD700"
+                            Margin="0,15"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="Start">
+                            <HorizontalStackLayout Margin="14,12" 
+                                               Spacing="12"
+                                               HorizontalOptions="FillAndExpand">
+                                <Image Source="phone.png" VerticalOptions="Center" WidthRequest="50"/>
+                                <Label Text="{Binding Details.PhoneNumber}" 
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" 
+                                   TextColor="White"
+                                   FontSize="25"/>
+                            </HorizontalStackLayout>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CallCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </VerticalStackLayout>
+
+        </StackLayout>
+
+    </ScrollView>
+</ContentPage>

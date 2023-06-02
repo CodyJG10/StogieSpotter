@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StogieSpotter.App.Views.Home"
+             Title="Home"
+             BackgroundImageSource="bg_1.png"
+             x:Name="page"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:rating="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid BackgroundColor="#CC000000">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout ZIndex="2"
+                             Margin="0,10">
+
+            <Grid ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
+                <ImageButton Source="lcoation.png"
+                        Grid.Column="0"
+                             HeightRequest="45"
+                             VerticalOptions="Center"
+                             Command="{Binding CitySelectedCommand}"/>
+
+                <Frame Grid.Column="1"
+                       BackgroundColor="Transparent"
+                       CornerRadius="15"
+                       Padding="5"
+                       BorderColor="Transparent"
+                       Margin="0,0,15,0">
+
+                    <VerticalStackLayout Margin="0,0,10,0">
+
+                        <Button Text="{Binding Query}"
+                                Clicked="Button_Clicked_1"
+                                BackgroundColor="Transparent"
+                                TextColor="Purple"
+                                Command="{Binding SearchForCityCommand}">
+                            <Button.Shadow>
+                                <Shadow Brush="Black"
+                                        Offset="5,5"
+                                        Radius="10"
+                                        Opacity="0.8" />
+                            </Button.Shadow>
+                        </Button>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </Grid>
+
+            <Frame Margin="60,0,60,0"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent"
+                   HasShadow="True">
+                <Slider Minimum="0"
+                        Maximum="50"
+                        Value="{Binding Radius}"
+                        DragCompletedCommand="{Binding RadiusUpdatedCommand}"
+                        MinimumTrackColor="DeepSkyBlue"
+                        MaximumTrackColor="DeepSkyBlue"
+                        ThumbColor="DeepSkyBlue" />
+            </Frame>
+
+            <Label Text="{Binding Radius, StringFormat='range: {0} miles'}"
+                   HorizontalOptions="Center"
+                   FontSize="25"
+                   TextColor="White"
+                   />
+
+        </VerticalStackLayout>
+
+        <StackLayout IsVisible="{Binding Loading}"
+                     Grid.Row="1"
+                     VerticalOptions="Center">
+            <ActivityIndicator Color="{StaticResource Primary}"
+                               WidthRequest="100"
+                               IsRunning="True"
+                               HeightRequest="100"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+            <Label Text="Loading..."
+                   TextColor="{StaticResource Primary}"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Start"/>
+        </StackLayout>
+        
+        <StackLayout VerticalOptions="FillAndExpand"
+                     Grid.Row="1"
+                     IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}"
+                     ZIndex="1">
+
+            <CollectionView ItemsSource="{Binding NearbyPlaces}"
+                            x:Name="nearbyPlacesList"
+                          VerticalOptions="FillAndExpand"
+                          Margin="25">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#66FFFDD0"
+                            BorderColor="Transparent"
+                            CornerRadius="30"
+                            Margin="0,20,0,0">
+                            <VerticalStackLayout>
+                                <Image Source="{Binding Icon}"
+                                    HorizontalOptions="Center"
+                                    WidthRequest="50"/>
+                                <Label Text="{Binding Place.Name}"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    FontSize="Large"
+                                    TextColor="White"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding PriceText}"
+                                        Grid.Column="0"
+                                        HorizontalOptions="End"
+                                        Margin="0,0,15,0"
+                                        TextColor="White"/>
+                                    <Label Text="{Binding Path=Distance, StringFormat='{0} mi.'}"
+                                        Grid.Column="1"
+                                        HorizontalOptions="Center"
+                                        Margin="15,0,15,0"
+                                        TextColor="White"/>
+                                    <Label Text="{Binding RatingText}"
+                                        Grid.Column="2"
+                                        HorizontalOptions="Start"
+                                        Margin="15,0,0,0"
+                                        TextColor="White"
+                                        HorizontalTextAlignment="Center"/>
+                                </Grid>
+                                <CollectionView ItemsSource="{Binding Photos}">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout Orientation="Horizontal" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame BackgroundColor="Transparent"
+                                                BorderColor="Transparent"
+                                                VerticalOptions="FillAndExpand">
+                                                <Image Source="{Binding .}" 
+                                                    Aspect="Fill"
+                                                    WidthRequest="100"
+                                                    HeightRequest="100"
+                                                    HorizontalOptions="FillAndExpand"
+                                                    VerticalOptions="FillAndExpand"/>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="VIEW"
+                                        Command="{Binding Source={x:Reference page}, Path=BindingContext.LocationClickedCommand}" 
+                                        CommandParameter="{Binding}"
+                                        HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+
+    </Grid>
+
+</ContentPage>
