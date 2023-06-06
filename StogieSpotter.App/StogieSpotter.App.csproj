@@ -15,7 +15,7 @@
 		<ApplicationTitle>Stogie Spotter</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.codygordon.stogiespotter</ApplicationId>
+		<ApplicationId>dev.acesoftware.stogiespotter</ApplicationId>
 		<ApplicationIdGuid>4bfae984-d247-4598-950a-b477689cce84</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -29,13 +29,15 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<Company>$(Authors)</Company>
-	</PropertyGroup>
+	  <UserSecretsId>88b56833-8026-4752-a6e5-f6b654a3ad4e</UserSecretsId>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\logo_min.png" BaseSize="424,520" Color="#522415"/>
+		<MauiIcon Include="Resources\AppIcon\logo.png" BaseSize="424,520" Color="#522415"/>
+
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#331c16" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#331c16" BaseSize="450,450"/>
 		
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -58,9 +60,8 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="Google.Apis" Version="1.60.0" />
 		<PackageReference Include="GoogleApi" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="Syncfusion.Licensing" Version="21.2.8" />
-		<PackageReference Include="Syncfusion.Maui.Inputs" Version="21.2.8" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -77,21 +78,6 @@
 	  <MauiXaml Update="Views\SearchForCity.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-	  <PackageReference Include="DevExpress.Maui.Editors">
-	    <Version>22.2.6</Version>
-	  </PackageReference>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
-	  <PackageReference Include="DevExpress.Maui.Controls">
-	    <Version>22.2.6</Version>
-	  </PackageReference>
-	  <PackageReference Include="DevExpress.Maui.Editors">
-	    <Version>22.2.6</Version>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

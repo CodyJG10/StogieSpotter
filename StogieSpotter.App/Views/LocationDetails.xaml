@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StogieSpotter.App.Views.LocationDetails"
-             Title="Details"
+             Title="{Binding Details.Details.Name}"
              x:Name="page"
              BackgroundImageSource="bg_1.png"
+             Shell.PresentationMode="Animated"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
@@ -15,47 +16,56 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <Style x:Key="LargeLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Large" />
+            </Style>
+            <Style x:Key="MediumLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+            </Style>
+            <Style x:Key="SmallLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Small" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
+    <ScrollView BackgroundColor="#CC000000">
 
         <StackLayout>
 
+            <!--Loading Spinner-->
             <StackLayout IsVisible="{Binding Loading}"
-                     Grid.Row="1"
-                     VerticalOptions="Center">
-                <ActivityIndicator Color="{StaticResource Primary}"
-                               WidthRequest="100"
-                               IsRunning="True"
-                               HeightRequest="100"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"/>
-                <Label Text="Loading..."
-                   TextColor="{StaticResource Primary}"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Start"/>
+                Grid.Row="1"
+                         BackgroundColor="Black"
+                VerticalOptions="FillAndExpand">
+                <StackLayout VerticalOptions="CenterAndExpand">
+                    <ActivityIndicator Color="{StaticResource Primary}"
+                                   WidthRequest="100"
+                                   IsRunning="True"
+                                   HeightRequest="100"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+                    <Label Text="Loading..."
+                       TextColor="{StaticResource Primary}"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                           VerticalOptions="Start"/>
+                </StackLayout>
             </StackLayout>
 
-            <VerticalStackLayout IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}">
-
-                <Label Text="Loading"
-                   TextColor="{StaticResource Primary}"
-                   FontSize="Large"
-                   HorizontalTextAlignment="Center"
-                   IsVisible="{Binding Loading}"
-                   />
-
-                <Frame BackgroundColor="Transparent"
-               BorderColor="Transparent"
-               CornerRadius="45">
+            <VerticalStackLayout IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}"
+                                 Opacity="{Binding PageOpacity}">
+                <!--Cover Image-->
+                <Border StrokeShape="RoundRectangle 25"
+                        BackgroundColor="Transparent"
+                        Margin="15">
 
                     <Image Source="{Binding CoverImage}"
-                   HeightRequest="400"
-                   Aspect="AspectFill"/>
+                           x:Name="MainImage"
+                           HeightRequest="400"
+                           Aspect="AspectFill"/>
+                </Border>
 
-                </Frame>
-
+                <!--Get Directions button-->
                 <Frame Margin="10,0,10,0"
                    BackgroundColor="Transparent"
                    BorderColor="Transparent">
@@ -74,7 +84,8 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" 
                                    TextColor="White"
-                                   FontSize="25"/>
+                                   Style="{Binding LabelStyle}"
+                                    />
                         </HorizontalStackLayout>
 
                         <Border.GestureRecognizers>
@@ -84,17 +95,16 @@
                     </Border>
                 </Frame>
 
-
-
+                <!--Photos Slideshow-->
                 <CollectionView ItemsSource="{Binding Details.Photos}">
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" />
+                        <LinearItemsLayout Orientation="Horizontal" SnapPointsAlignment="Center" SnapPointsType="MandatorySingle" />
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame BackgroundColor="Transparent"
-                                                   BorderColor="Transparent"
-                                                   VerticalOptions="FillAndExpand">
+                            <Border StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="Transparent"
+                                    Margin="15">    
                                 <Image Source="{Binding}" 
                                                        Aspect="Fill"
                                                        WidthRequest="200"
@@ -102,15 +112,15 @@
                                                        HorizontalOptions="FillAndExpand"
                                                        VerticalOptions="FillAndExpand">
                                     <Image.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={x:Reference page}, Path=BindingContext.PhotoSelectedCommand}"
-                                                          CommandParameter="{Binding}"/>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                                     </Image.GestureRecognizers>
                                 </Image>
-                            </Frame>
+                            </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
+                <!--Info Card-->
                 <Frame BackgroundColor="#FFFDD0"
                    CornerRadius="25"
                    Margin="15">
@@ -118,23 +128,24 @@
                     <VerticalStackLayout>
 
                         <Label Text="{Binding Details.Details.Name}"
-                           FontSize="30"
+                               Style="{Binding LabelStyle}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            />
 
                         <Label Text="{Binding Details.PriceText}"
-                           FontSize="30"
+                           Style="{Binding LabelStyle}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            Margin="0,10"/>
 
                         <Label Text="{Binding Details.RatingText}"
-                           FontSize="30"
+                           Style="{Binding LabelStyle}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            Margin="0,10"/>
 
+                        <!--Website Button-->
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
                             Background="#FFD700"
                             HorizontalOptions="FillAndExpand"
@@ -149,7 +160,7 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" 
                                    TextColor="White"
-                                   FontSize="Small"/>
+                                  Style="{Binding LabelStyle}"/>
                             </HorizontalStackLayout>
 
                             <Border.GestureRecognizers>
@@ -157,7 +168,7 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-
+                        <!--Call Button--> 
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
                             Background="#FFD700"
                             Margin="0,15"
@@ -172,14 +183,13 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" 
                                    TextColor="White"
-                                   FontSize="25"/>
+                                  Style="{Binding LabelStyle}"/>
                             </HorizontalStackLayout>
 
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding CallCommand}"/>
                             </Border.GestureRecognizers>
                         </Border>
-
 
                     </VerticalStackLayout>
 

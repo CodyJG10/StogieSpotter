@@ -49,18 +49,17 @@ namespace StogieSpotter.PlacesApi
                 Key = _apiKey,
                 Location = location,
                 Keyword = keyword,
-                Radius = radius
+                Radius = radius, 
             };
 
             var result = await new NearBySearchApi().QueryAsync(request);
 
-            var test = result.Results.ToList()[0];
             return result;
         }
 
         public async Task<PlacesNearbySearchResponse> GetNearbyPlaces(string location, string keyword, int miles)
         {
-            double radius = miles * 1609.34;
+            double radius = 1609.34;
             var request = new PlacesNearBySearchRequest()
             {
                 Key = _apiKey,
@@ -71,7 +70,6 @@ namespace StogieSpotter.PlacesApi
 
             var result = await new NearBySearchApi().QueryAsync(request);
 
-            var test = result.Results.ToList()[0];
             return result;
         }
 

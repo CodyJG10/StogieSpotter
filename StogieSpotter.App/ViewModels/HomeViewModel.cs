@@ -27,7 +27,16 @@ namespace StogieSpotter.App.ViewModels
         private ObservableCollection<LocationResult> _nearbyPlaces = new ObservableCollection<LocationResult>();
 
         [ObservableProperty]
-        private int _radius = 10;
+        [NotifyPropertyChangedFor(nameof(RadiusText))]
+        private double _radius = 10;
+
+        public string RadiusText
+        {
+            get
+            {
+                return ((int)Math.Round(Radius)).ToString();
+            }
+        }
 
         private GooglePlacesService _placesService;
 
@@ -38,6 +47,12 @@ namespace StogieSpotter.App.ViewModels
         private string _query = "TAP TO SEARCH ANOTHER AREA";
 
         private bool _isUsingPhysicalLocation = true;
+
+        [ObservableProperty]
+        private bool _noResults = false;
+
+        [ObservableProperty]
+        private bool _showPlaces = false;
 
         public HomeViewModel(GooglePlacesService placesService)
         {
@@ -61,9 +76,13 @@ namespace StogieSpotter.App.ViewModels
             Init();
         }
 
-        private async void Init()
+        private async Task Init()
         {
+            await CheckAndRequestLocationPermission();
+
             Loading = true;
+            ShowPlaces = false;
+            NoResults = false;
             if (NearbyPlaces != null)
             {
                 NearbyPlaces = new ObservableCollection<LocationResult>();
@@ -74,10 +93,11 @@ namespace StogieSpotter.App.ViewModels
 
 
             PlacesNearbySearchResponse nearbyResults;
-            if(_isUsingPhysicalLocation)
-                nearbyResults = await _placesService.GetNearbyPlaces("Cigar Lounge", Radius);
+            var radius = (int)Math.Round(Radius);
+            if (_isUsingPhysicalLocation)
+                nearbyResults = await _placesService.GetNearbyPlaces("Cigar Lounge", radius);
             else
-                nearbyResults = await _placesService.GetNearbyPlaces(Query, "Cigar Lounge", Radius);
+                nearbyResults = await _placesService.GetNearbyPlaces(Query, "Cigar Lounge", radius);
             foreach (var place in nearbyResults.Results)
             {
                 try
@@ -136,9 +156,46 @@ namespace StogieSpotter.App.ViewModels
                 catch (Exception) { }
             }
             NearbyPlaces = new ObservableCollection<LocationResult>(NearbyPlaces.OrderBy(obj => int.Parse(obj.Distance)));
-            RadiusUpdated();
             Loading = false;
+            if (NearbyPlaces.Count == 0)
+            {
+                NoResults = true;
+                ShowPlaces = false;
+            }
+            else
+            {
+                NoResults = false;
+                ShowPlaces = true;
+            }
             OnPropertyChanged(nameof(NearbyPlaces));
+        }
+
+        public async Task CheckAndRequestLocationPermission()
+        {
+            //PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+            //if (status == PermissionStatus.Granted)
+            //    return status;
+            //if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            //{
+            //    // Prompt the user to turn on in settings
+            //    // On iOS once a permission has been denied it may not be requested again from the application
+            //    return status;
+            //}
+            //if (Permissions.ShouldShowRationale<Permissions.LocationWhenInUse>())
+            //{
+            //    // Prompt the user with additional information as to why the permission is needed
+            //    await Shell.Current.DisplayAlert("Needs permissions", "BECAUSE!!!", "OK");
+            //}
+            //status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            //return status;
+
+            if(Permissions.ShouldShowRationale<Permissions.LocationWhenInUse>())
+            {
+                await Shell.Current.DisplayAlert("Permission is required", "Location permission is required for Stogie Spotter to work", "OK");
+            }
+            var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            if (status != PermissionStatus.Granted)
+                await CheckAndRequestLocationPermission();
         }
 
         [RelayCommand]
@@ -148,8 +205,9 @@ namespace StogieSpotter.App.ViewModels
         }
 
         [RelayCommand]
-        public void RadiusUpdated()
+        public async void RadiusUpdated()
         {
+            await Init();
             var filtered = from location in NearbyPlaces
                            where int.Parse(location.Distance) <= Radius
                            select location;

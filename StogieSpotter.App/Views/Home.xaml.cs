@@ -12,11 +12,7 @@ public partial class Home : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = viewModel;
-	}
-
-    private async void Button_Clicked(object sender, EventArgs e)
-    {
-		await Shell.Current.GoToAsync("//home/details");
+		StartAnimations();
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)
@@ -25,16 +21,27 @@ public partial class Home : ContentPage
         this.ShowPopup(new SearchForCity(new SearchForCityViewModel(placesService, BindingContext as HomeViewModel)));
     }
 
+    private async void StartAnimations()
+	{
+		List<VisualElement> visualElements = new List<VisualElement>();
+		visualElements.AddRange(new VisualElement[] { CitySettingsGrid, RangeSlider, RangeLabel });
+		visualElements.ForEach(x => x.IsVisible = false);
+		foreach (var element in visualElements)
+		{
+			element.IsVisible = true;
 
-    private void NearbyPlacesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        var selected = nearbyPlacesList.SelectedItem;
-        (BindingContext as HomeViewModel).LocationClickedCommand.Execute(selected);
-    }
+            var originalTranslationX = element.TranslationX;
+            var originalTranslationY = element.TranslationY;
 
-    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-    {
-        var selected = nearbyPlacesList.SelectedItem;
-        (BindingContext as HomeViewModel).LocationClickedCommand.Execute(selected);
-    }
+            // Set the element's initial translation for the animation
+            element.TranslationY = originalTranslationY + 100;
+
+            // Create and start the animation
+            await element.TranslateTo(originalTranslationX, originalTranslationY, 700, Easing.CubicInOut);
+
+            // Reset the element's translation to the original values
+            element.TranslationX = originalTranslationX;
+            element.TranslationY = originalTranslationY;
+        }
+	}
 }

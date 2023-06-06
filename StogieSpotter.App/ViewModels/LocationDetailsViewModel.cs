@@ -22,6 +22,10 @@ namespace StogieSpotter.App.ViewModels
         private bool _loading = true;
         [ObservableProperty]
         private ImageSource _coverImage;
+        [ObservableProperty]
+        private double _pageOpacity;
+        [ObservableProperty]
+        private string _labelStyle;
 
         public LocationDetailsViewModel()
         {
@@ -104,6 +108,7 @@ namespace StogieSpotter.App.ViewModels
             Details = details;
             Loading = false;
             OnPropertyChanged();
+            FadeInBackground();
         }
 
         [RelayCommand]
@@ -132,6 +137,21 @@ namespace StogieSpotter.App.ViewModels
         {
             Uri uri = new Uri(Details.Details.Website);
             await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
+
+        private async void FadeInBackground()
+        {
+            double value = 0;
+            double step = 1 / (250 / 16.67); // Assuming 60 FPS (16.67ms per frame)
+
+            while (value < 1)
+            {
+                PageOpacity = value;
+                await Task.Delay(16); // Delay for one frame (16ms)
+                value += step;
+            }
+
+            PageOpacity = 1; // Ensure
         }
     }
 }
