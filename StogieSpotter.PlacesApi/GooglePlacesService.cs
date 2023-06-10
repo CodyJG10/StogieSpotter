@@ -42,6 +42,7 @@ namespace StogieSpotter.PlacesApi
 
         public async Task<PlacesNearbySearchResponse> GetNearbyPlaces(string keyword, int miles)
         {
+            
             var location = await GetLocationAsync();
             double radius = miles * 1609.34;
             var request = new PlacesNearBySearchRequest()

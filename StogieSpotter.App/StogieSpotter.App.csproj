@@ -32,12 +32,17 @@
 	  <UserSecretsId>88b56833-8026-4752-a6e5-f6b654a3ad4e</UserSecretsId>
   </PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+	  <CodesignKey>Apple Development: Created via API (BAZR6FZMPR)</CodesignKey>
+	  <CodesignProvision>VS: dev.acesoftware.stogiespotter Development</CodesignProvision>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\logo.png" BaseSize="424,520" Color="#522415"/>
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" BaseSize="424,520" Color="#522415" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#331c16" BaseSize="450,450"/>
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#331c16" BaseSize="450,450" />
 		
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />

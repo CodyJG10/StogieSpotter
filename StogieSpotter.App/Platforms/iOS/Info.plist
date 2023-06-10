@@ -24,9 +24,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleIdentifier</key>
+	<string>dev.acesoftware.stogiespotter</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Access User Location</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
 </dict>
 </plist>

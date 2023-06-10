@@ -7,7 +7,6 @@
             InitializeComponent();
 
             MainPage = new AppShell();
-            //AppShell.Current.GoToAsync("//home//details");
         }
     }
 }

@@ -5,6 +5,8 @@ using GoogleApi.Entities.Common;
 using GoogleApi.Entities.Places.Details.Response;
 using GoogleApi.Entities.Places.Photos.Response;
 using GoogleApi.Entities.Places.Search.NearBy.Response;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using StogieSpotter.App.Models;
@@ -172,23 +174,6 @@ namespace StogieSpotter.App.ViewModels
 
         public async Task CheckAndRequestLocationPermission()
         {
-            //PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-            //if (status == PermissionStatus.Granted)
-            //    return status;
-            //if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
-            //{
-            //    // Prompt the user to turn on in settings
-            //    // On iOS once a permission has been denied it may not be requested again from the application
-            //    return status;
-            //}
-            //if (Permissions.ShouldShowRationale<Permissions.LocationWhenInUse>())
-            //{
-            //    // Prompt the user with additional information as to why the permission is needed
-            //    await Shell.Current.DisplayAlert("Needs permissions", "BECAUSE!!!", "OK");
-            //}
-            //status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-            //return status;
-
             if(Permissions.ShouldShowRationale<Permissions.LocationWhenInUse>())
             {
                 await Shell.Current.DisplayAlert("Permission is required", "Location permission is required for Stogie Spotter to work", "OK");

@@ -28,7 +28,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView BackgroundColor="#CC000000">
+    <ScrollView>
 
         <StackLayout>
 
@@ -68,6 +68,7 @@
                 <!--Get Directions button-->
                 <Frame Margin="10,0,10,0"
                    BackgroundColor="Transparent"
+                       HeightRequest="150"
                    BorderColor="Transparent">
 
                     <Border StrokeShape="{RoundRectangle CornerRadius=8}"
@@ -96,7 +97,8 @@
                 </Frame>
 
                 <!--Photos Slideshow-->
-                <CollectionView ItemsSource="{Binding Details.Photos}">
+                <CollectionView ItemsSource="{Binding Details.Photos}"
+                                HeightRequest="200">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Horizontal" SnapPointsAlignment="Center" SnapPointsType="MandatorySingle" />
                     </CollectionView.ItemsLayout>
@@ -148,6 +150,7 @@
                         <!--Website Button-->
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
                             Background="#FFD700"
+                       HeightRequest="150"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="Start"
                             SemanticProperties.Description="Button that opens a filter dialog">
@@ -171,6 +174,7 @@
                         <!--Call Button--> 
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
                             Background="#FFD700"
+                       HeightRequest="150"
                             Margin="0,15"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="Start">
