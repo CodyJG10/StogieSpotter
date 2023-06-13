@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StogieSpotter.App.Services;
 using StogieSpotter.PlacesApi;
+using StogieSpotter.PlacesApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +14,7 @@ namespace StogieSpotter.App.ViewModels
 {
     public partial class SearchForCityViewModel : ObservableObject
     {
-        private GooglePlacesService _placesService;
+        private IPlacesService _placesService;
 
         [ObservableProperty]
         private ObservableCollection<string> _suggestions = new ObservableCollection<string>();
@@ -21,7 +23,7 @@ namespace StogieSpotter.App.ViewModels
 
         private HomeViewModel _homeViewModel;
 
-        public SearchForCityViewModel(GooglePlacesService placesService, HomeViewModel homeViewModel)
+        public SearchForCityViewModel(IPlacesService placesService, HomeViewModel homeViewModel)
         {
             _placesService = placesService;
             _homeViewModel = homeViewModel;
@@ -35,7 +37,7 @@ namespace StogieSpotter.App.ViewModels
                 Suggestions.Clear();
                 return;
             }
-            var results = await _placesService.GetAutocompleteResults(Query);
+            var results = await _placesService.GetAutocompleteResults((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()), Query);
             results = results.Take(6).ToList();
             Suggestions = new ObservableCollection<string>();
             results.ForEach(x => Suggestions.Add(x));

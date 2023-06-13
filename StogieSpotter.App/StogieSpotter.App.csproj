@@ -34,7 +34,16 @@
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
 	  <CodesignKey>Apple Development: Created via API (BAZR6FZMPR)</CodesignKey>
-	  <CodesignProvision>VS: dev.acesoftware.stogiespotter Development</CodesignProvision>
+	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <MtouchNoSymbolStrip>True</MtouchNoSymbolStrip>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <MtouchNoSymbolStrip>True</MtouchNoSymbolStrip>
+	  <MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -63,8 +72,6 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-		<PackageReference Include="Google.Apis" Version="1.60.0" />
-		<PackageReference Include="GoogleApi" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>

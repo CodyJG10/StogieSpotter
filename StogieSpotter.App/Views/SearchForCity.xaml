@@ -5,8 +5,7 @@
            x:Class="StogieSpotter.App.Views.SearchForCity"
            CanBeDismissedByTappingOutsideOfPopup="True">
     <VerticalStackLayout VerticalOptions="FillAndExpand"
-						 HorizontalOptions="FillAndExpand"
-                         Margin="50,100,50,100">
+						 HorizontalOptions="FillAndExpand">
 
         <SearchBar Placeholder="Enter A Location"
                     TextColor="Black"
@@ -22,7 +21,8 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="0,0,0,0"
-                            VerticalOptions="FillAndExpand">
+                            VerticalOptions="FillAndExpand"
+							BackgroundColor="Transparent">
                         <Label Text="{Binding}"
                                HorizontalTextAlignment="Center"
                                FontSize="Medium"

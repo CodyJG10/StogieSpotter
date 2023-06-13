@@ -9,12 +9,14 @@ using StogieSpotter.PlacesApi;
 using StogieSpotter.App.Services;
 using GoogleApi.Entities.Maps.Common;
 using CommunityToolkit.Mvvm.Input;
+using StogieSpotter.PlacesApi.Interfaces;
+using GoogleApi.Entities.Places.Details.Response;
 
 namespace StogieSpotter.App.ViewModels
 {
     public partial class LocationDetailsViewModel : ObservableObject
     {
-        private GooglePlacesService _placesService;
+        private IPlacesService _placesService;
 
         [ObservableProperty]
         private LocationDetails _details;
@@ -29,27 +31,63 @@ namespace StogieSpotter.App.ViewModels
 
         public LocationDetailsViewModel()
         {
-            _placesService = MyServiceLocator.Services.GetService<GooglePlacesService>();
+            _placesService = MyServiceLocator.Services.GetService<IPlacesService>();
         }
 
         public async void Init(string placeId)
         {
             var place = await _placesService.GetPlaceDetails(placeId);
 
-            string starsText = "";
-            if (place.Rating != 0)
+            string websiteUrl = place.Website;
+
+            if (websiteUrl != null)
             {
-                int stars = (int)Math.Floor(place.Rating);
-                for (int i = 0; i < stars; i++)
+                if (websiteUrl.EndsWith("/"))
                 {
-                    starsText += "★";
+                    websiteUrl = websiteUrl.TrimEnd('/');
+                    websiteUrl = websiteUrl.Replace("https://", "").Replace("www.", "").Replace("http://", "");
                 }
             }
-            else
-            {
-                starsText = "No reviews found";
-            }
 
+            string starsText = GetStarRating(place);
+            var priceText = GetPriceText(place);
+
+            LocationDetails details = new LocationDetails()
+            {
+                Photos = new List<ImageSource>(),
+                Details = place,
+                RatingText = starsText,
+                PriceText = priceText,
+                Address = place.FormattedAddress,
+                PhoneNumber = place.FormattedPhoneNumber,
+                WebsiteUrl = websiteUrl
+            };
+
+            List<ImageSource> photos = new List<ImageSource>();
+            if (place.Photos != null)
+            {
+                foreach (var photoRef in place.Photos)
+                {
+                    var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
+                    photos.Add(ImageSource.FromUri(photo));
+                }
+            }
+            Uri coverImage = new Uri("https://via.placeholder.com/300x200?text=NO+IMAGE+FOUND");
+            var image  = await _placesService.GetPhoto(place.Photos.ToList()[0].PhotoReference, 600);
+            if(image != null)
+            {
+                coverImage = image;
+            }
+            CoverImage = ImageSource.FromUri(coverImage);
+            details.Photos = photos;
+            Details = details;
+            Loading = false;
+            OnPropertyChanged();
+            FadeInBackground();
+        }
+
+        private string GetPriceText(DetailsResult place)
+        {
             string priceText = "";
             if (place.PriceLevel != 0)
             {
@@ -58,7 +96,7 @@ namespace StogieSpotter.App.ViewModels
                 {
                     priceText += "$";
                 }
-                switch(priceLevel)
+                switch (priceLevel)
                 {
                     case 1:
                         priceText += " - Cheap";
@@ -78,37 +116,25 @@ namespace StogieSpotter.App.ViewModels
             {
                 priceText = "No prices found";
             }
+            return priceText;
+        }
 
-            string websiteUrl = place.Website;
-                
-            if (websiteUrl.EndsWith("/"))
+        private string GetStarRating(DetailsResult place)
+        {
+            string starsText = "";
+            if (place.Rating != 0)
             {
-                websiteUrl = websiteUrl.TrimEnd('/');
+                int stars = (int)Math.Floor(place.Rating);
+                for (int i = 0; i < stars; i++)
+                {
+                    starsText += "★";
+                }
             }
-
-            LocationDetails details = new LocationDetails()
+            else
             {
-                Photos = new List<ImageSource>(),
-                Details = place,
-                RatingText = starsText,
-                PriceText = priceText,
-                Address = place.FormattedAddress,
-                PhoneNumber = place.FormattedPhoneNumber,
-                WebsiteUrl = websiteUrl.Replace("https://", "").Replace("www.", "").Replace("http://", ""),
-            };
-            List<ImageSource> photos = new List<ImageSource>();
-            foreach (var photoRef in place.Photos)
-            {
-                var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
-                photos.Add(ImageSource.FromStream(() => photo.Stream));
+                starsText = "No reviews found";
             }
-            var coverImage = await _placesService.GetPhoto(place.Photos.ToList()[0].PhotoReference, 600);
-            CoverImage = ImageSource.FromStream(() => coverImage.Stream);
-            details.Photos = photos;
-            Details = details;
-            Loading = false;
-            OnPropertyChanged();
-            FadeInBackground();
+            return starsText;
         }
 
         [RelayCommand]

@@ -25,6 +25,11 @@
             <Style x:Key="SmallLabelStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="Small" />
             </Style>
+            <Style x:Key="BorderButton" TargetType="Border">
+                <Setter Property="HeightRequest" Value="80" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="VerticalOptions" Value="Start"/>
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -55,26 +60,31 @@
             <VerticalStackLayout IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}"
                                  Opacity="{Binding PageOpacity}">
                 <!--Cover Image-->
-                <Border StrokeShape="RoundRectangle 25"
-                        BackgroundColor="Transparent"
-                        Margin="15">
+                <!--<Border StrokeShape="RoundRectangle 25"
+                        BackgroundColor="Red"
+                        Margin="15">-->
+                <!--<Frame CornerRadius="20"
+                       BackgroundColor="Transparent"
+                       BorderColor="Transparent"
+                       IsClippedToBounds="True" 
+                       HeightRequest="400"
+                       Margin="15">-->
 
                     <Image Source="{Binding CoverImage}"
                            x:Name="MainImage"
                            HeightRequest="400"
                            Aspect="AspectFill"/>
-                </Border>
+
+                <!--</Frame>-->
+                <!--</Border>-->
 
                 <!--Get Directions button-->
                 <Frame Margin="10,0,10,0"
                    BackgroundColor="Transparent"
-                       HeightRequest="150"
                    BorderColor="Transparent">
 
                     <Border StrokeShape="{RoundRectangle CornerRadius=8}"
-                            Background="#FFD700"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="Start"
+                            Style="{StaticResource BorderButton}"
                             SemanticProperties.Description="Button that opens a filter dialog">
                         <HorizontalStackLayout Margin="14,12" 
                                                Spacing="12"
@@ -106,13 +116,13 @@
                         <DataTemplate>
                             <Border StrokeShape="RoundRectangle 25"
                                     BackgroundColor="Transparent"
-                                    Margin="15">    
+                                    Margin="15">
                                 <Image Source="{Binding}" 
-                                                       Aspect="Fill"
-                                                       WidthRequest="200"
-                                                       HeightRequest="200"
-                                                       HorizontalOptions="FillAndExpand"
-                                                       VerticalOptions="FillAndExpand">
+                                        Aspect="Fill"
+                                        WidthRequest="200"
+                                        HeightRequest="200"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="FillAndExpand">
                                     <Image.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                                     </Image.GestureRecognizers>
@@ -149,11 +159,8 @@
 
                         <!--Website Button-->
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
-                            Background="#FFD700"
-                       HeightRequest="150"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="Start"
-                            SemanticProperties.Description="Button that opens a filter dialog">
+                                Style="{StaticResource BorderButton}"
+                                SemanticProperties.Description="Button that opens a filter dialog">
                             <HorizontalStackLayout Margin="14,12" 
                                                Spacing="12"
                                                HorizontalOptions="FillAndExpand">
@@ -171,13 +178,10 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!--Call Button--> 
+                        <!--Call Button-->
                         <Border StrokeShape="{RoundRectangle CornerRadius=8}"
-                            Background="#FFD700"
-                       HeightRequest="150"
-                            Margin="0,15"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="Start">
+                                Margin="0,15"
+                                Style="{StaticResource BorderButton}">
                             <HorizontalStackLayout Margin="14,12" 
                                                Spacing="12"
                                                HorizontalOptions="FillAndExpand">

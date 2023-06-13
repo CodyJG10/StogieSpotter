@@ -8,10 +8,11 @@ using GoogleApi.Entities.Places.Search.NearBy.Response;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using StogieSpotter.App.Models;
+using StogieSpotter.App.Services;
 using StogieSpotter.App.Views;
 using StogieSpotter.PlacesApi;
+using StogieSpotter.PlacesApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -40,7 +41,7 @@ namespace StogieSpotter.App.ViewModels
             }
         }
 
-        private GooglePlacesService _placesService;
+        private IPlacesService _placesService;
 
         [ObservableProperty]
         private bool _loading = true;
@@ -56,7 +57,7 @@ namespace StogieSpotter.App.ViewModels
         [ObservableProperty]
         private bool _showPlaces = false;
 
-        public HomeViewModel(GooglePlacesService placesService)
+        public HomeViewModel(IPlacesService placesService)
         {
             _placesService = placesService;
             Init();
@@ -97,7 +98,7 @@ namespace StogieSpotter.App.ViewModels
             PlacesNearbySearchResponse nearbyResults;
             var radius = (int)Math.Round(Radius);
             if (_isUsingPhysicalLocation)
-                nearbyResults = await _placesService.GetNearbyPlaces("Cigar Lounge", radius);
+                nearbyResults = await _placesService.GetNearbyPlaces((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()),"Cigar Lounge", radius);
             else
                 nearbyResults = await _placesService.GetNearbyPlaces(Query, "Cigar Lounge", radius);
             foreach (var place in nearbyResults.Results)
@@ -124,20 +125,27 @@ namespace StogieSpotter.App.ViewModels
                         }
                     }
 
+                    ImageSource icon = null;
+                    if (place.IconUrl != null)
+                        icon = ImageSource.FromUri(new Uri(place.IconUrl));
+
                     LocationResult result = new LocationResult()
                     {
                         Photos = new List<ImageSource>(),
                         Place = place,
-                        Icon = ImageSource.FromUri(new Uri(place.IconUrl)),
+                        Icon = icon,
                         RatingText = starsText,
                         PriceText = priceText,
                     };
                     List<ImageSource> photos = new List<ImageSource>();
-                    var details = await _placesService.GetPlaceDetails(result.Place.PlaceId);
-                    foreach (var photoRef in details.Photos.Take(3))
+                    var details = await _placesService.GetPlaceDetails(place.PlaceId);
+                    if (details.Photos != null)
                     {
-                        var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
-                        photos.Add(ImageSource.FromStream(() => photo.Stream));
+                        foreach (var photoRef in details.Photos.Take(3))
+                        {
+                            var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
+                            photos.Add(ImageSource.FromUri(photo));
+                        }
                     }
                     result.Photos = photos;
 
@@ -146,7 +154,7 @@ namespace StogieSpotter.App.ViewModels
                     var destination = await _placesService.Geocode(details.FormattedAddress);
                     if (_isUsingPhysicalLocation)
                     {
-                        distance = await _placesService.GetDistance(destination);
+                        distance = await _placesService.GetDistance((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()), destination);
                     }
                     else
                     {
@@ -155,7 +163,10 @@ namespace StogieSpotter.App.ViewModels
                     result.Distance = distance.ToString();
                     NearbyPlaces.Add(result);
                 }
-                catch (Exception) { }
+                catch (Exception e) 
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
             NearbyPlaces = new ObservableCollection<LocationResult>(NearbyPlaces.OrderBy(obj => int.Parse(obj.Distance)));
             Loading = false;

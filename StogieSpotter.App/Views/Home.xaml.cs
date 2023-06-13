@@ -3,6 +3,7 @@ using StogieSpotter.App.Models;
 using StogieSpotter.App.Services;
 using StogieSpotter.App.ViewModels;
 using StogieSpotter.PlacesApi;
+using StogieSpotter.PlacesApi.Interfaces;
 
 namespace StogieSpotter.App.Views;
 
@@ -15,9 +16,9 @@ public partial class Home : ContentPage
 		StartAnimations();
     }
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    private void Button_Clicked_1(object sender, EventArgs e)
     {
-        var placesService = (GooglePlacesService)MyServiceLocator.Services.GetService(typeof(GooglePlacesService));
+        var placesService = (IPlacesService)MyServiceLocator.Services.GetService(typeof(IPlacesService));
         this.ShowPopup(new SearchForCity(new SearchForCityViewModel(placesService, BindingContext as HomeViewModel)));
     }
 

@@ -6,6 +6,7 @@ using StogieSpotter.App.Views;
 using StogieSpotter.PlacesApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using StogieSpotter.PlacesApi.Interfaces;
 
 namespace StogieSpotter.App
 {
@@ -32,7 +33,8 @@ namespace StogieSpotter.App
             // Replace this with API key
             //var googleApiKey = builder.Configuration["GoogleApiKey"];
             var googleApiKey = "AIzaSyCk2IvSd0NzJv2N0y_eO9omAthLXTSxgVw";
-            builder.Services.AddSingleton(new GooglePlacesService(googleApiKey));
+            //builder.Services.AddSingleton(new GooglePlacesService(googleApiKey));
+            builder.Services.AddSingleton<IPlacesService>(new PlaceService(googleApiKey));
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<Home>();
 
@@ -41,6 +43,7 @@ namespace StogieSpotter.App
 
             builder.Services.AddSingleton<IMauiInitializeService, MyServiceLocator>();
 
+            builder.Services.AddSingleton<LocationService>();
 
             return builder.Build();
         }
