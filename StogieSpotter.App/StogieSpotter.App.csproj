@@ -33,8 +33,8 @@
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
-	  <CodesignKey>Apple Development: Created via API (BAZR6FZMPR)</CodesignKey>
-	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
+	  <CodesignKey>Apple Development: Cody Gordon (692B3QUX3A)</CodesignKey>
+	  <CodesignProvision>Stogie Spotter Dev</CodesignProvision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
@@ -48,7 +48,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#522415"/>
+		<MauiIcon Include="Resources\AppIcon\icon.png" Color="#331c16"/>
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#331c16" BaseSize="450,450" />
 		
