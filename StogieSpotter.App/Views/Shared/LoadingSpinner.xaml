@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StogieSpotter.App.Views.Shared.LoadingSpinner">
+
+    <Frame CornerRadius="15"
+           BorderColor="Transparent"
+           BackgroundColor="Transparent"
+           Margin="0"
+           Padding="0">
+        <VerticalStackLayout BackgroundColor="{StaticResource Secondary}"
+                         Padding="15"
+                         Margin="20"
+                         WidthRequest="200">
+
+            <ActivityIndicator Color="{StaticResource Primary}"
+                            IsRunning="True"
+                           VerticalOptions="Center"
+                            HorizontalOptions="Center"/>
+
+            <Label Text="Loading..."
+               TextColor="{StaticResource Primary}"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Start"/>
+
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

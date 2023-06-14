@@ -2,14 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StogieSpotter.App.Views.Home"
-             BackgroundImageSource="bg_1.png"
              x:Name="page"
+             BackgroundImageSource="bg_1.png"
              Shell.NavBarIsVisible="False"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:loading="clr-namespace:StogieSpotter.App.Views.Shared"
+             xmlns:converters="clr-namespace:StogieSpotter.App.Converters">
 
+    <!--<ContentPage.BackgroundImageSource>
+        <FileImageSource File="bg_1.png" />
+    </ContentPage.BackgroundImageSource>-->
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:LabelStyleConverter x:Key="LabelStyleConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -18,11 +25,11 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
         <VerticalStackLayout ZIndex="2"
-                             Margin="0,10">
+                             Margin="0,10,0,15">
 
             <Grid ColumnSpacing="15" 
                 x:Name="CitySettingsGrid">
@@ -50,11 +57,15 @@
                        BorderColor="Transparent"
                        Margin="0,0,15,0">
 
-                    <VerticalStackLayout Margin="0,0,10,0">
+                    <Frame Margin="0,0,10,0"
+                            BackgroundColor="#66FFFDD0"
+                           CornerRadius="25"
+                           BorderColor="Transparent">
 
                         <Button Text="{Binding Query}"
                                 BackgroundColor="Transparent"
-                                TextColor="Purple"
+                                FontSize="Small"
+                                TextColor="{StaticResource Primary}"
                                 HorizontalOptions="FillAndExpand"
                                  Clicked="Button_Clicked_1"
                                 Command="{Binding SearchForCityCommand}">
@@ -66,7 +77,7 @@
                             </Button.Shadow>
                         </Button>
 
-                    </VerticalStackLayout>
+                    </Frame>
 
                 </Frame>
 
@@ -100,16 +111,7 @@
         <StackLayout IsVisible="{Binding Loading}"
                      Grid.Row="1"
                      VerticalOptions="Center">
-            <ActivityIndicator Color="{StaticResource Primary}"
-                               WidthRequest="300"
-                               HeightRequest="300"
-                               IsRunning="True"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"/>
-            <Label Text="Loading..."
-                   TextColor="{StaticResource Primary}"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Start"/>
+            <loading:LoadingSpinner VerticalOptions="CenterAndExpand"/>
         </StackLayout>
 
         <!-- No Results -->
@@ -117,8 +119,8 @@
                      Grid.Row="1"
                      VerticalOptions="Center">
             <Label Text="No results were found for your location and range."
-                   TextColor="{StaticResource Primary}"
                    HorizontalTextAlignment="Center"
+                   Style="{Binding LabelStyle, Converter={StaticResource LabelStyleConverter}}"
                    VerticalTextAlignment="Start">
                 <Label.Shadow>
                     <Shadow Brush="Black"
@@ -129,14 +131,16 @@
         </StackLayout>
 
         <!--Result List-->
-        <StackLayout VerticalOptions="FillAndExpand"
-                     Grid.Row="1"
+        <Frame BackgroundColor="Transparent"
+               BorderColor="Transparent"
+               Margin="0"
+               Padding="0"
+               CornerRadius="30"
+                 Grid.Row="1"
+               IsClippedToBounds="True">
+            <StackLayout VerticalOptions="FillAndExpand"
                      IsVisible="{Binding ShowPlaces}"
                      ZIndex="1">
-
-            <!--IsVisible="{Binding Loading, Converter={StaticResource InvertedBoolConverter}}"-->
-
-
             <!--List-->
             <CollectionView ItemsSource="{Binding NearbyPlaces}"
                             x:Name="NearbyPlacesList"
@@ -208,6 +212,7 @@
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
                                 <Button Text="VIEW"
+                                        FontSize="Large"
                                         Command="{Binding Source={x:Reference page}, Path=BindingContext.LocationClickedCommand}" 
                                         CommandParameter="{Binding}"
                                         HorizontalOptions="Center"/>
@@ -218,7 +223,7 @@
             </CollectionView>
 
         </StackLayout>
-
+        </Frame>
     </Grid>
 
 </ContentPage>

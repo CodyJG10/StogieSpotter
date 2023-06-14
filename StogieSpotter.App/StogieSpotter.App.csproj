@@ -32,12 +32,6 @@
 	  <UserSecretsId>88b56833-8026-4752-a6e5-f6b654a3ad4e</UserSecretsId>
   </PropertyGroup>
 
-	<!--<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
-	  <CodesignKey>iPhone Developer</CodesignKey>
-	  <CodesignProvision>Stogie Spotter Dev</CodesignProvision>
-	  <ProvisioningType>automatic</ProvisioningType>
-	</PropertyGroup>-->
-
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 	  <MtouchNoSymbolStrip>True</MtouchNoSymbolStrip>
 	</PropertyGroup>
@@ -72,6 +66,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\bg_1.png" />
+	  <None Remove="Resources\Images\leather.jpg" />
 	  <None Remove="Resources\Images\search.png" />
 	</ItemGroup>
 
@@ -94,6 +89,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SearchForCity.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Shared\LoadingSpinner.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

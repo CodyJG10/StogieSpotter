@@ -132,4 +132,14 @@
         <Setter Property="SelectedTabColor" Value="{StaticResource Gray950}" />
     </Style>
 
+    <Style x:Key="LargeLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Large" />
+    </Style>
+    <Style x:Key="MediumLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Medium" />
+    </Style>
+    <Style x:Key="SmallLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Small" />
+    </Style>
+
 </ResourceDictionary>
