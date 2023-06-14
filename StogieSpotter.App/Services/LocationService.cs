@@ -11,7 +11,7 @@ namespace StogieSpotter.App.Services
     {
         public async Task<Coordinate> GetDeviceLocation()
         {
-            var location = await Geolocation.Default.GetLastKnownLocationAsync();
+            var location = await Geolocation.Default.GetLocationAsync();
             return new Coordinate(location.Latitude, location.Longitude);
         }
     }

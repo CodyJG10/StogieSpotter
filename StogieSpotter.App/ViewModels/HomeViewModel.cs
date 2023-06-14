@@ -93,12 +93,15 @@ namespace StogieSpotter.App.ViewModels
             Coordinate locationOrigin = null;
             if(!_isUsingPhysicalLocation)
                 locationOrigin = await _placesService.Geocode(Query);
-
+            else
+            {
+                locationOrigin = await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation();
+            }
 
             PlacesNearbySearchResponse nearbyResults;
             var radius = (int)Math.Round(Radius);
             if (_isUsingPhysicalLocation)
-                nearbyResults = await _placesService.GetNearbyPlaces((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()),"Cigar Lounge", radius);
+                nearbyResults = await _placesService.GetNearbyPlaces(locationOrigin,"Cigar Lounge", radius);
             else
                 nearbyResults = await _placesService.GetNearbyPlaces(Query, "Cigar Lounge", radius);
             foreach (var place in nearbyResults.Results)
