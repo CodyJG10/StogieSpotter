@@ -11,7 +11,8 @@ namespace StogieSpotter.App.Models
     public class LocationResult
     {
         public NearByResult Place { get; set; }
-        public IEnumerable<ImageSource> Photos { get; set; }
+        //public IEnumerable<ImageSource> Photos { get; set; }
+        public ImageSource Photo { get; set; }
         public ImageSource Icon { get; set; }
         public string RatingText { get; set; }
         public string PriceText { get; set; }

@@ -68,14 +68,7 @@
                                 TextColor="{StaticResource Primary}"
                                 HorizontalOptions="FillAndExpand"
                                  Clicked="Button_Clicked_1"
-                                Command="{Binding SearchForCityCommand}">
-                            <Button.Shadow>
-                                <Shadow Brush="Black"
-                                        Offset="5,5"
-                                        Radius="10"
-                                        Opacity="0.8" />
-                            </Button.Shadow>
-                        </Button>
+                                Command="{Binding SearchForCityCommand}"/>
 
                     </Frame>
 
@@ -189,7 +182,7 @@
                                         TextColor="White"
                                         HorizontalTextAlignment="Center"/>
                                 </Grid>
-                                <CollectionView ItemsSource="{Binding Photos}"
+                                <!--<CollectionView ItemsSource="{Binding Photos}"
                                                 VerticalOptions="Start"
                                                 HeightRequest="125">
                                     <CollectionView.ItemsLayout>
@@ -210,8 +203,11 @@
                                             </Border>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
-                                </CollectionView>
-                                <Button Text="VIEW"
+                                </CollectionView>-->
+                                    <Image HeightRequest="125"
+                                            Source="{Binding Photo}"
+                                           Aspect="AspectFit"/>
+                                        <Button Text="VIEW"
                                         FontSize="Large"
                                         Command="{Binding Source={x:Reference page}, Path=BindingContext.LocationClickedCommand}" 
                                         CommandParameter="{Binding}"

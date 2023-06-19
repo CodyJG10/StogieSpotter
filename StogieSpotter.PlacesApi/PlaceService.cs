@@ -51,19 +51,7 @@ namespace StogieSpotter.PlacesApi
         public override async Task<PlacesNearbySearchResponse> GetNearbyPlaces(string query, string keyword, int miles)
         {
             var location = await Geocode(query);
-
-            double radius = miles * 1609.34;
-            var request = new PlacesNearBySearchRequest()
-            {
-                Key = _apiKey,
-                Location = location,
-                Keyword = keyword,
-                Radius = radius,
-            };
-
-            var result = await new NearBySearchApi(new HttpClient()).QueryAsync(request);
-
-            return result;
+            return await GetNearbyPlaces(location, keyword, miles);
         }
 
         public override async Task<Coordinate> Geocode(string query)

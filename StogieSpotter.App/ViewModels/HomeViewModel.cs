@@ -104,6 +104,77 @@ namespace StogieSpotter.App.ViewModels
                 nearbyResults = await _placesService.GetNearbyPlaces(locationOrigin,"Cigar Lounge", radius);
             else
                 nearbyResults = await _placesService.GetNearbyPlaces(Query, "Cigar Lounge", radius);
+            //foreach (var place in nearbyResults.Results)
+            //{
+            //    try
+            //    {
+            //        string starsText = "";
+            //        if (place.Rating.HasValue)
+            //        {
+            //            int stars = (int)Math.Floor(place.Rating.Value);
+            //            for (int i = 0; i < stars; i++)
+            //            {
+            //                starsText += "★";
+            //            }
+            //        }
+
+            //        string priceText = "";
+            //        if(place.PriceLevel.HasValue)
+            //        {
+            //            var priceLevel = (int)place.PriceLevel.Value;
+            //            for(int i = 0; i < priceLevel; i++)
+            //            {
+            //                priceText += "$";
+            //            }
+            //        }
+
+            //        ImageSource icon = null;
+            //        if (place.IconUrl != null)
+            //            icon = ImageSource.FromUri(new Uri(place.IconUrl));
+
+            //        LocationResult result = new LocationResult()
+            //        {
+            //            Photos = new List<ImageSource>(),
+            //            Place = place,
+            //            Icon = icon,
+            //            RatingText = starsText,
+            //            PriceText = priceText,
+            //        };
+            //        List<ImageSource> photos = new List<ImageSource>();
+            //        var details = await _placesService.GetPlaceDetails(place.PlaceId);
+            //        if (details.Photos != null)
+            //        {
+            //            foreach (var photoRef in details.Photos.Take(3))
+            //            {
+            //                var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
+            //                photos.Add(ImageSource.FromUri(photo));
+            //            }
+            //        }
+            //        result.Photos = photos;
+
+            //        // Distance
+            //        int distance;
+            //        var destination = await _placesService.Geocode(details.FormattedAddress);
+            //        if (_isUsingPhysicalLocation)
+            //        {
+            //            distance = await _placesService.GetDistance((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()), destination);
+            //        }
+            //        else
+            //        {
+            //            distance = await _placesService.GetDistance(locationOrigin, destination);
+            //        }
+
+            //        result.Distance = distance.ToString();
+            //        NearbyPlaces.Add(result);
+            //    }
+            //    catch (Exception e) 
+            //    {
+            //        Console.WriteLine(e.Message);
+            //    }
+            //}
+
+
+
             foreach (var place in nearbyResults.Results)
             {
                 try
@@ -119,10 +190,10 @@ namespace StogieSpotter.App.ViewModels
                     }
 
                     string priceText = "";
-                    if(place.PriceLevel.HasValue)
+                    if (place.PriceLevel.HasValue)
                     {
                         var priceLevel = (int)place.PriceLevel.Value;
-                        for(int i = 0; i < priceLevel; i++)
+                        for (int i = 0; i < priceLevel; i++)
                         {
                             priceText += "$";
                         }
@@ -134,36 +205,35 @@ namespace StogieSpotter.App.ViewModels
 
                     LocationResult result = new LocationResult()
                     {
-                        Photos = new List<ImageSource>(),
                         Place = place,
                         Icon = icon,
                         RatingText = starsText,
                         PriceText = priceText,
                     };
-                    List<ImageSource> photos = new List<ImageSource>();
-                    var details = await _placesService.GetPlaceDetails(place.PlaceId);
-                    if (details.Photos != null)
-                    {
-                        foreach (var photoRef in details.Photos.Take(3))
-                        {
-                            var photo = await _placesService.GetPhoto(photoRef.PhotoReference, 400);
-                            photos.Add(ImageSource.FromUri(photo));
-                        }
-                    }
-                    result.Photos = photos;
 
-                    // Distance
-                    int distance;
-                    var destination = await _placesService.Geocode(details.FormattedAddress);
+
+                    // Get distance
+                    double distance;
                     if (_isUsingPhysicalLocation)
                     {
-                        distance = await _placesService.GetDistance((await MyServiceLocator.Services.GetService<LocationService>().GetDeviceLocation()), destination);
+                        distance = (await MyServiceLocator.Services.GetService<LocationService>().GetDistance(null, place.Geometry.Location));
                     }
                     else
                     {
-                        distance = await _placesService.GetDistance(locationOrigin, destination);
+                        distance = (await MyServiceLocator.Services.GetService<LocationService>().GetDistance(locationOrigin, place.Geometry.Location));
                     }
-                    result.Distance = distance.ToString();
+                    string distanceText = ((int)Math.Round(distance)).ToString();
+                    
+                    result.Distance = distanceText;
+
+
+                    // Cover Photo
+                    if (place.Photos != null)
+                    {
+                        var photo = await _placesService.GetPhoto(place.Photos.First().PhotoReference, 400);
+                        result.Photo = photo;
+                    }
+
                     NearbyPlaces.Add(result);
                 }
                 catch (Exception e) 
@@ -171,6 +241,7 @@ namespace StogieSpotter.App.ViewModels
                     Console.WriteLine(e.Message);
                 }
             }
+
             NearbyPlaces = new ObservableCollection<LocationResult>(NearbyPlaces.OrderBy(obj => int.Parse(obj.Distance)));
             Loading = false;
             if (NearbyPlaces.Count == 0)
